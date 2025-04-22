@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    {% load static %}
+    <link href="{% static 'css/login.css' %}" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>Roll Camera Action</h1>
+        </nav>
+        
+    </header>
+    <div id="login-bg">
+        <form method="post">
+            {% csrf_token %}
+            <h2>SIGN UP</h2>
+            <input type="text" name="username" id="login-text" placeholder="Enter Username" required><br><br>
+            <input type="password" name="password" id="login-text" placeholder="Enter Password" required><br><br>
+            <button id="submit-btn" type="submit">Sign Up</button><br>
+            <p>
+                Already have an account? <a href="{% url 'login' %}" style="color: blue;">Log In</a>
+            </p>
+        </form>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RCA</title>
+    {% load static %}
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Hello, {{ user.username }}!!!</h1>
+        
+    </header>
+    <div class="details">
+        <div class="camera">
+            <h1>Explore some gadjets...</h1>
+            <div class="cards">
+                <div class="card" id="c1">
+                    <h3>Nikon A7 IV</h3>
+                    <button>Explore</a></button>
+                </div>
+                <div class="card" id="c2">
+                    <h3>Canon EOS R5 II</h3>
+                    <button>Explore</a></button>
+                </div>
+                <div class="card" id="c3">
+                    <h3>Nikon Z8</h3>
+                    <button>Explore</button>
+                </div>
+                <div class="card" id="c4">
+                    <h3>Sony a7CR</h3>
+                    <button>Explore</button>
+                </div>
+            </div>
+            <div class="cards">
+                <div class="card" id="c5">
+                    <h3>Canon 50S II</h3>
+                    <button>Explore</button>
+                </div>
+                <div class="card" id="c6">
+                    <h3>Sony a7R V</h3>
+                    <button>Explore</a></button>
+                </div>
+                <div class="card" id="c7">
+                    <h3>Sony FX3</h3>
+                    <button>Explore</button>
+                </div>
+                <div class="card" id="b1">
+                    <h3>SOME INTRESTING FACTS</h3>
+                </div>
+            </div>
+        </div>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+</body>
+</html>

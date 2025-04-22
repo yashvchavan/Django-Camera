@@ -1,0 +1,167 @@
+/* General Styles */
+body {
+    background-image: url("../Images/login-bg.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+header nav {
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 12%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header nav h1 {
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2.5rem;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 2px;
+    margin: 0;
+    
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+header nav ul li {
+    padding: 10px 20px;
+}
+
+header nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: color 0.3s ease-in-out;
+}
+
+header nav ul li a:hover {
+    color: #f0a500;
+}
+
+/* Login & Signup Form Styles */
+#background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#login-bg, #signup-bg {
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 400px;
+    height: 500px;
+    border-radius: 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease-in-out;
+    text-align: center;
+}
+
+#login-bg:hover, #signup-bg:hover {
+    transform: scale(1);
+}
+
+#login-bg form h2, #signup-bg form h2 {
+    font-size: 2.5rem;
+    margin-top: 30px;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+}
+
+#login-bg form h5, #signup-bg form h5 {
+    font-size: 1rem;
+    margin-top: 10px;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+}
+
+#login-bg form h5:hover, #signup-bg form h5:hover {
+    color: #f0a500;
+}
+
+form {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#login-bg form input, #signup-bg form input {
+    width: 80%;
+    height: 40px;
+    margin: 10px 0;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    padding: 0 10px;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#login-bg form input:focus, #signup-bg form input:focus {
+    border-color: #f0a500;
+    box-shadow: 0 0 8px rgba(240, 165, 0, 0.5);
+    outline: none;
+}
+
+#submit-btn {
+    width: 80%;
+    height: 45px;
+    background-color: #333;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#submit-btn:hover {
+    background-color: #f0a500;
+    color: black;
+    box-shadow: 0 6px 12px rgba(240, 165, 0, 0.5);
+}
+
+/* Table Styles (if used) */
+.table {
+    margin-top: 20px;
+    border: 2px solid #ddd;
+    border-collapse: collapse;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.table th, .table td {
+    border: 2px solid #ddd;
+    padding: 10px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.table th {
+    background-color: #f0a500;
+    color: white;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table tr:hover {
+    background-color: #f0f0f0;
+}

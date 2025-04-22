@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <header>
+        <h1>Hello, {{ user.username }}</h1>
+        <a href="{% url 'logout' %}">Logout</a>
+    </header>
+    <div>
+        {% for camera in cameras %}
+            <div>
+                <h2>{{ camera.name }}</h2>
+                <a href="{% url 'camera_detail' camera.id %}">
+                    <img src="{{ camera.image.url }}" alt="{{ camera.name }}" style="width:200px;height:200px;">
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
