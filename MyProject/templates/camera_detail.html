@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block title %}{{ camera.name }} - Camera Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .camera-detail {
+        padding: 3rem 0;
+    }
+
+    .camera-gallery {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .main-image {
+        width: 100%;
+        height: 400px;
+        object-fit: contain;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .thumbnail-container {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        overflow-x: auto;
+        padding: 1rem 0;
+    }
+
+    .thumbnail {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .thumbnail:hover {
+        transform: scale(1.1);
+    }
+
+    .camera-info {
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .camera-price {
+        font-size: 2rem;
+        color: var(--accent-color);
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .camera-title {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .camera-description {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    .specs-container {
+        margin-top: 2rem;
+    }
+
+    .spec-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .spec-item:hover {
+        transform: translateX(10px);
+        background: #e9ecef;
+    }
+
+    .spec-icon {
+        font-size: 1.5rem;
+        color: var(--secondary-color);
+        margin-right: 1rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+
+    .interactive-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-3d {
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        flex: 1;
+    }
+
+    .btn-3d.view-3d {
+        background: var(--secondary-color);
+        color: white;
+    }
+
+    .btn-3d.view-tutorial {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .btn-3d:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+        .camera-title {
+            font-size: 2rem;
+        }
+
+        .main-image {
+            height: 300px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container camera-detail">
+    <div class="row">
+        <div class="col-lg-6" data-aos="fade-right">
+            <div class="camera-gallery">
+                <img src="{{ camera.image_url }}" alt="{{ camera.name }}" class="main-image" id="mainImage">
+                <div class="thumbnail-container">
+                    {% for image in camera.images.all %}
+                    <img src="{{ image.url }}" alt="{{ camera.name }}" class="thumbnail" 
+                         onclick="updateMainImage(this.src)" data-aos="fade-up" data-aos-delay="{{ forloop.counter|multiply:100 }}">
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6" data-aos="fade-left">
+            <div class="camera-info">
+                <div class="camera-price">${{ camera.price }}</div>
+                <h1 class="camera-title">{{ camera.name }}</h1>
+                <p class="camera-description">{{ camera.description }}</p>
+
+                <div class="specs-container">
+                    <h3>Key Specifications</h3>
+                    <div class="spec-item" data-aos="fade-left" data-aos-delay="200">
+                        <i class="fas fa-microchip spec-icon"></i>
+                        <div>
+                            <strong>Sensor:</strong> {{ camera.sensor }}
+                        </div>
+                    </div>
+                    <div class="spec-item" data-aos="fade-left" data-aos-delay="300">
+                        <i class="fas fa-image spec-icon"></i>
+                        <div>
+                            <strong>Resolution:</strong> {{ camera.resolution }}
+                        </div>
+                    </div>
+                    <div class="spec-item" data-aos="fade-left" data-aos-delay="400">
+                        <i class="fas fa-video spec-icon"></i>
+                        <div>
+                            <strong>Video:</strong> {{ camera.video_capabilities }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="interactive-buttons">
+                    <button class="btn btn-3d view-3d" onclick="view3DModel()">
+                        <i class="fas fa-cube"></i> View in 3D
+                    </button>
+                    <button class="btn btn-3d view-tutorial" onclick="viewTutorial()">
+                        <i class="fas fa-play-circle"></i> Watch Tutorial
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="features-grid mt-5">
+        <div class="feature-card" data-aos="fade-up">
+            <i class="fas fa-magic feature-icon"></i>
+            <h4>Auto Focus</h4>
+            <p>Advanced autofocus system with multiple focus points for precise shooting.</p>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+            <i class="fas fa-wifi feature-icon"></i>
+            <h4>Wireless Connectivity</h4>
+            <p>Built-in Wi-Fi and Bluetooth for easy sharing and remote control.</p>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+            <i class="fas fa-battery-full feature-icon"></i>
+            <h4>Battery Life</h4>
+            <p>Long-lasting battery performance for extended shooting sessions.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateMainImage(src) {
+    const mainImage = document.getElementById('mainImage');
+    mainImage.style.opacity = '0';
+    setTimeout(() => {
+        mainImage.src = src;
+        mainImage.style.opacity = '1';
+    }, 300);
+}
+
+function view3DModel() {
+    // Implement 3D viewer functionality
+    alert('3D model viewer coming soon!');
+}
+
+function viewTutorial() {
+    // Implement tutorial viewer functionality
+    alert('Tutorial viewer coming soon!');
+}
+
+// Add smooth transitions for main image
+document.getElementById('mainImage').style.transition = 'opacity 0.3s ease';
+</script>
+{% endblock %} 

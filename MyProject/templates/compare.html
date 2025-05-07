@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% load custom_filters %}
+{% block title %}Compare Cameras - Camera Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .comparison-container {
+        padding: 3rem 0;
+    }
+
+    .comparison-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .comparison-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .spec-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        margin-bottom: 1rem;
+        border-radius: 10px;
+    }
+
+    .spec-row:nth-child(even) {
+        background: white;
+    }
+
+    .spec-label {
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .camera-column {
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .camera-image-compare {
+        width: 200px;
+        height: 200px;
+        object-fit: contain;
+        margin: 0 auto 1rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .highlight {
+        background: rgba(52, 152, 219, 0.1);
+        border-radius: 5px;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .better-value {
+        color: #27ae60;
+        font-weight: bold;
+    }
+
+    .back-to-search {
+        display: inline-block;
+        margin-bottom: 2rem;
+        color: var(--secondary-color);
+        text-decoration: none;
+    }
+
+    .back-to-search i {
+        margin-right: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .spec-row {
+            grid-template-columns: 1fr;
+        }
+
+        .camera-column {
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .camera-column:last-child {
+            border-bottom: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container comparison-container">
+    <a href="{% url 'dashboard' %}" class="back-to-search">
+        <i class="fas fa-arrow-left"></i> Back to Search
+    </a>
+
+    <div class="comparison-header">
+        <h1 class="display-4">Camera Comparison</h1>
+        <p class="lead">Compare specifications and features side by side</p>
+    </div>
+
+    <div class="comparison-grid">
+        {% for camera in cameras %}
+        <div class="camera-column" data-aos="fade-up" data-aos-delay="{{ forloop.counter|multiply:200 }}">
+            <img src="{{ camera.image_url }}" alt="{{ camera.name }}" class="camera-image-compare">
+            <h3>{{ camera.name }}</h3>
+            <div class="camera-price">${{ camera.price }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="specs-comparison mt-5">
+        <div class="spec-row">
+            <div class="spec-label">Category</div>
+            {% for camera in cameras %}
+            <div class="spec-value">{{ camera.get_category_display }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="spec-row">
+            <div class="spec-label">Sensor</div>
+            {% for camera in cameras %}
+            <div class="spec-value">{{ camera.sensor }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="spec-row">
+            <div class="spec-label">Resolution</div>
+            {% for camera in cameras %}
+            <div class="spec-value">{{ camera.resolution }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="spec-row">
+            <div class="spec-label">Video Capabilities</div>
+            {% for camera in cameras %}
+            <div class="spec-value">{{ camera.video_capabilities }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Highlight better specifications
+    const specRows = document.querySelectorAll('.spec-row');
+    
+    specRows.forEach(row => {
+        const values = Array.from(row.querySelectorAll('.spec-value')).map(el => el.textContent);
+        
+        // Simple numeric comparison (for price, megapixels, etc.)
+        const numbers = values.map(v => parseFloat(v.replace(/[^0-9.]/g, '')));
+        if (!numbers.some(isNaN)) {
+            const best = Math.max(...numbers);
+            values.forEach((v, i) => {
+                if (parseFloat(v.replace(/[^0-9.]/g, '')) === best) {
+                    row.querySelectorAll('.spec-value')[i].classList.add('better-value');
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}My Wishlist - Camera Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .wishlist-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 3rem;
+        border-radius: 0 0 50px 50px;
+        text-align: center;
+    }
+
+    .empty-wishlist {
+        text-align: center;
+        padding: 3rem;
+    }
+
+    .empty-wishlist i {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 1rem;
+    }
+
+    .wishlist-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 1rem;
+    }
+
+    .remove-from-wishlist {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .remove-from-wishlist:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .remove-from-wishlist i {
+        color: var(--accent-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="wishlist-header" data-aos="fade-down">
+    <div class="container">
+        <h1 class="display-4">My Wishlist</h1>
+        <p class="lead">Keep track of your favorite cameras</p>
+    </div>
+</div>
+
+<div class="container">
+    {% if cameras %}
+        <div class="wishlist-grid">
+            {% for camera in cameras %}
+            <div class="camera-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|multiply:100 }}">
+                <button class="remove-from-wishlist" onclick="toggleWishlist({{ camera.id }}, this)">
+                    <i class="fas fa-times"></i>
+                </button>
+                <img src="{{ camera.image_url }}" alt="{{ camera.name }}" class="camera-image">
+                <div class="camera-info">
+                    <div class="camera-price">${{ camera.price }}</div>
+                    <h3 class="camera-title">{{ camera.name }}</h3>
+                    <p class="camera-description">{{ camera.description }}</p>
+                    <a href="{% url 'camera_detail' camera.id %}" class="btn btn-details">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-wishlist" data-aos="fade-up">
+            <i class="far fa-heart"></i>
+            <h3>Your wishlist is empty</h3>
+            <p>Start adding cameras to your wishlist by clicking the heart icon on any camera card.</p>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary mt-3">
+                Browse Cameras
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleWishlist(cameraId, button) {
+    fetch(`/wishlist/toggle/${cameraId}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const card = button.closest('.camera-card');
+                card.style.opacity = '0';
+                setTimeout(() => {
+                    card.remove();
+                    if (document.querySelectorAll('.camera-card').length === 0) {
+                        location.reload();
+                    }
+                }, 300);
+            }
+        });
+}
+</script>
+{% endblock %} 

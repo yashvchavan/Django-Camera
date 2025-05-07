@@ -1,0 +1,399 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Camera Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+        border-radius: 0 0 50px 50px;
+    }
+
+    .search-container {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        border-radius: 30px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        font-size: 1.1rem;
+        padding-left: 3rem;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+    }
+
+    .camera-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 1rem;
+    }
+
+    .camera-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .camera-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+
+    .camera-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 2px solid #f8f9fa;
+    }
+
+    .camera-info {
+        padding: 1.5rem;
+    }
+
+    .camera-price {
+        color: var(--accent-color);
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .camera-title {
+        font-size: 1.25rem;
+        margin: 0.5rem 0;
+        color: var(--primary-color);
+    }
+
+    .camera-description {
+        color: #666;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .btn-details {
+        width: 100%;
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 0.8rem;
+        border-radius: 8px;
+        transition: background 0.3s ease;
+    }
+
+    .btn-details:hover {
+        background: #2980b9;
+    }
+
+    .filters {
+        margin-bottom: 2rem;
+    }
+
+    .filter-btn {
+        margin: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        border: 2px solid var(--secondary-color);
+        background: transparent;
+        color: var(--secondary-color);
+        transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+        background: var(--secondary-color);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .camera-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+    }
+
+    .camera-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        align-items: center;
+    }
+
+    .compare-checkbox {
+        display: none;
+    }
+
+    .compare-label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: var(--secondary-color);
+    }
+
+    .compare-label::before {
+        content: '';
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--secondary-color);
+        border-radius: 4px;
+        margin-right: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .compare-checkbox:checked + .compare-label::before {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+
+    .wishlist-btn {
+        background: none;
+        border: none;
+        color: var(--accent-color);
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .wishlist-btn:hover {
+        transform: scale(1.2);
+    }
+
+    .compare-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+    }
+
+    .compare-bar.active {
+        transform: translateY(0);
+    }
+
+    .compare-bar-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .selected-items {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .selected-item {
+        display: flex;
+        align-items: center;
+        background: #f8f9fa;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+    }
+
+    .remove-item {
+        margin-left: 0.5rem;
+        cursor: pointer;
+        color: var(--accent-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-section" data-aos="fade-down">
+    <div class="container text-center">
+        <h1 class="display-4">Discover Your Perfect Camera</h1>
+        <p class="lead">Explore our collection of cameras with detailed information and specifications</p>
+        
+        <div class="search-container" data-aos="fade-up" data-aos-delay="200">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for cameras..." id="searchInput">
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="filters text-center" data-aos="fade-up" data-aos-delay="400">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">DSLR</button>
+        <button class="filter-btn">Mirrorless</button>
+        <button class="filter-btn">Point & Shoot</button>
+        <button class="filter-btn">Action Cameras</button>
+    </div>
+
+    <div class="camera-grid">
+        {% for camera in cameras %}
+        <div class="camera-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:400 }}" data-category="{{ camera.category }}">
+            <img src="{{ camera.image_url }}" alt="{{ camera.name }}" class="camera-image">
+            <div class="camera-info">
+                <div class="camera-price">${{ camera.price }}</div>
+                <h3 class="camera-title">{{ camera.name }}</h3>
+                <p class="camera-description">{{ camera.description }}</p>
+                <a href="{% url 'camera_detail' camera.id %}" class="btn btn-details">
+                    View Details
+                </a>
+                <div class="camera-actions">
+                    <input type="checkbox" id="compare-{{ camera.id }}" class="compare-checkbox" data-camera-id="{{ camera.id }}" data-camera-name="{{ camera.name }}">
+                    <label for="compare-{{ camera.id }}" class="compare-label">Compare</label>
+                    <button class="wishlist-btn" onclick="toggleWishlist({{ camera.id }})">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="compare-bar">
+    <div class="compare-bar-content">
+        <div class="selected-items"></div>
+        <button class="btn btn-primary" onclick="compareSelected()">Compare Cameras</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const cameraCards = document.querySelectorAll('.camera-card');
+
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        cameraCards.forEach(card => {
+            const title = card.querySelector('.camera-title').textContent.toLowerCase();
+            const description = card.querySelector('.camera-description').textContent.toLowerCase();
+            
+            if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    // Filter buttons
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            const filter = this.textContent.toLowerCase();
+            
+            cameraCards.forEach(card => {
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                } else {
+                    const category = card.getAttribute('data-category').toLowerCase();
+                    card.style.display = category === filter ? 'block' : 'none';
+                }
+            });
+        });
+    });
+});
+
+// Comparison functionality
+const compareBar = document.querySelector('.compare-bar');
+const selectedItems = document.querySelector('.selected-items');
+const compareCheckboxes = document.querySelectorAll('.compare-checkbox');
+let selectedCameras = [];
+
+compareCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const cameraId = this.dataset.cameraId;
+        const cameraName = this.dataset.cameraName;
+
+        if (this.checked) {
+            if (selectedCameras.length >= 3) {
+                alert('You can compare up to 3 cameras at a time');
+                this.checked = false;
+                return;
+            }
+            selectedCameras.push({ id: cameraId, name: cameraName });
+        } else {
+            selectedCameras = selectedCameras.filter(cam => cam.id !== cameraId);
+        }
+
+        updateCompareBar();
+    });
+});
+
+function updateCompareBar() {
+    selectedItems.innerHTML = selectedCameras.map(camera => `
+        <div class="selected-item">
+            ${camera.name}
+            <span class="remove-item" onclick="removeFromComparison('${camera.id}')">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+    `).join('');
+
+    compareBar.classList.toggle('active', selectedCameras.length > 0);
+}
+
+function removeFromComparison(cameraId) {
+    const checkbox = document.querySelector(`#compare-${cameraId}`);
+    if (checkbox) checkbox.checked = false;
+    selectedCameras = selectedCameras.filter(cam => cam.id !== cameraId);
+    updateCompareBar();
+}
+
+function compareSelected() {
+    if (selectedCameras.length < 2) {
+        alert('Please select at least 2 cameras to compare');
+        return;
+    }
+    const ids = selectedCameras.map(cam => cam.id).join(',');
+    window.location.href = `/compare/${ids}/`;
+}
+
+// Wishlist functionality
+function toggleWishlist(cameraId) {
+    const button = event.currentTarget;
+    const icon = button.querySelector('i');
+    
+    if (icon.classList.contains('far')) {
+        icon.classList.remove('far');
+        icon.classList.add('fas');
+        icon.style.color = 'red';
+        // Add to wishlist API call here
+    } else {
+        icon.classList.remove('fas');
+        icon.classList.add('far');
+        icon.style.color = '';
+        // Remove from wishlist API call here
+    }
+}
+</script>
+{% endblock %} 
